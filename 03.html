@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的個人網站</title>
+    <style>
+      body {
+        font-family: "Microsoft JhengHei", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #e3f2fd, #fff);
+        color: #333;
+      }
+
+      header {
+        background-color: hsl(168, 80%, 42%);
+        color: white;
+        text-align: center;
+        padding: 20px 0;
+      }
+
+      header h1 {
+        margin: 0;
+      }
+
+      .container {
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .info,
+      .intro {
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f5f5f5;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      nav {
+        margin-bottom: 10px;
+      }
+
+      nav button {
+        padding: 8px 16px;
+        margin-right: 10px;
+        cursor: pointer;
+        border: 1px solid #333;
+        background-color: white;
+        transition: background-color 0.3s;
+      }
+
+      nav button.active {
+        background-color: #333;
+        color: white;
+      }
+
+      .section {
+        display: none;
+        padding: 20px;
+        border: 1px solid #ccc;
+        margin-top: 10px;
+      }
+
+      .section.active {
+        display: block;
+      }
+
+      .photo1 {
+        display: flex;
+        justify-content: right;
+        gap: 20px;
+        float: right;
+      }
+
+      .photo1 img {
+        width: 300px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+      }
+
+      .photos {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .photos img {
+        width: 150px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+        cursor: zoom-in;
+      }
+
+      .photos img:hover {
+        transform: scale(1.05);
+      }
+
+      .photos img.enlarged {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: auto !important;
+        max-width: 90vw;
+        max-height: 90vh;
+        height: auto !important;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+        cursor: zoom-out;
+        border-radius: 15px;
+      }
+
+      #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+        cursor: zoom-out;
+        display: none;
+      }
+
+      .intro {
+        animation: fadeInUp 1s ease-in-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="overlay"></div>
+
+    <header>
+      <h1>你好!</h1>
+    </header>
+
+    <div class="container">
+      <div class="info">
+        <nav>
+          <button data-target="section1" class="active">主頁</button>
+          <button data-target="section2">自我介紹</button>
+          <button data-target="section3">血壓量測</button>
+          <button data-target="section4">控制家電</button>
+        </nav>
+
+        <!-- 主頁 -->
+        <div id="section1" class="section active">
+          <div class="intro">
+            <h2>歡迎來到我的個人網站</h2>
+            <p>
+              這是一個展示我工作經歷與技能的網站，包含消防機電維修、智慧家電控制、以及血壓量測等內容。
+            </p>
+          </div>
+
+          <div class="info">
+            <h3>網站導覽</h3>
+            <ul>
+              <li>
+                <strong>自我介紹：</strong>了解我的背景、專業技能與工作內容。
+              </li>
+              <li>
+                <strong>血壓量測：</strong>探索我如何應用技術進行健康監測。
+              </li>
+              <li><strong>控制家電：</strong>體驗我開發的智慧家庭應用。</li>
+            </ul>
+            <p>使用上方的導覽按鈕切換不同區塊內容。</p>
+          </div>
+        </div>
+
+        <!-- 自我介紹 -->
+        <div id="section2" class="section">
+          <div class="info">
+            <div class="photo1">
+              <img src="profile.jpg" alt="profile" />
+            </div>
+            <h2>基本資訊</h2>
+            <p>姓名: 何家騏</p>
+            <p>學號：C110252220</p>
+            <p>生日: 2003.03.26</p>
+            <p>工作：消防機電維修</p>
+            <p>興趣: 音樂</p>
+          </div>
+
+          <div class="info">
+            <h2>工作內容</h2>
+            <p>
+              大樓的機電設備保養及維修，如汙水、廢水、揚水系統和控制盤。消防系統保養維修需了解自動控制、電力知識、三相電，以及受信總機（P型、R型）的原理與查修。
+            </p>
+
+            <h3>消防機組管系查修</h3>
+            <div class="photos">
+              <img src="1.jpg" alt="" />
+              <img src="2.jpg" alt="" />
+              <img src="3.jpg" alt="" />
+              <img src="4.jpg" alt="" />
+              <img src="5.jpg" alt="" />
+              <img src="6.jpg" alt="" />
+            </div>
+
+            <h3>受信總機查修</h3>
+            <div class="photos">
+              <img src="21.jpg" alt="" />
+              <img src="22.jpg" alt="" />
+              <img src="23.jpg" alt="" />
+              <img src="24.jpg" alt="" />
+              <img src="25.jpg" alt="" />
+              <img src="26.jpg" alt="" />
+              <img src="27.jpg" alt="" />
+              <img src="29.jpg" alt="" />
+              <img src="30.jpg" alt="" />
+              <img src="32.jpg" alt="" />
+            </div>
+
+            <h3>控制盤查修</h3>
+            <div class="photos">
+              <img src="43.jpg" alt="" />
+              <img src="44.jpg" alt="" />
+              <img src="45.jpg" alt="" />
+              <img src="46.jpg" alt="" />
+              <img src="51.jpg" alt="" />
+              <img src="52.jpg" alt="" />
+              <img src="55.jpg" alt="" />
+            </div>
+
+            <h3>廣播主機更新</h3>
+            <div class="photos">
+              <img src="61.jpg" alt="" />
+              <img src="63.jpg" alt="" />
+              <img src="65.jpg" alt="" />
+              <img src="66.jpg" alt="" />
+              <img src="68.jpg" alt="" />
+              <img src="70.jpg" alt="" />
+              <img src="71.jpg" alt="" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 血壓量測 -->
+        <div id="section3" class="section">
+          <h2>血壓量測</h2>
+          <p>（此處可填入血壓感測器裝置的介紹或照片）</p>
+        </div>
+
+        <!-- 控制家電 -->
+        <div id="section4" class="section">
+          <h2>控制家電</h2>
+          <p>（此處可填入智慧家電控制的內容與展示）</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      const buttons = document.querySelectorAll("nav button");
+      const sections = document.querySelectorAll(".section");
+      const overlay = document.getElementById("overlay");
+
+      // 導覽按鈕切換區塊
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          buttons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+
+          const targetId = button.getAttribute("data-target");
+          sections.forEach((section) => {
+            section.classList.toggle("active", section.id === targetId);
+          });
+        });
+      });
+
+      // 照片點擊放大/縮小
+      document.querySelectorAll(".photos img").forEach((img) => {
+        img.addEventListener("click", () => {
+          const isEnlarged = img.classList.contains("enlarged");
+
+          // 先縮回其他放大的圖片
+          document
+            .querySelectorAll(".photos img.enlarged")
+            .forEach((el) => el.classList.remove("enlarged"));
+
+          if (isEnlarged) {
+            overlay.style.display = "none";
+            document.body.style.overflow = "";
+          } else {
+            img.classList.add("enlarged");
+            overlay.style.display = "block";
+            document.body.style.overflow = "hidden";
+          }
+        });
+      });
+
+      // 點擊遮罩縮回圖片
+      overlay.addEventListener("click", () => {
+        overlay.style.display = "none";
+        document.body.style.overflow = "";
+        document
+          .querySelectorAll(".photos img.enlarged")
+          .forEach((img) => img.classList.remove("enlarged"));
+      });
+    </script>
+  </body>
+</html>
+，再由總機控制外部的附載

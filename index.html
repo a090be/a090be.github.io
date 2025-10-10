@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1</title>
+  <style>
+    body {
+      font-family: "Microsoft JhengHei", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #e3f2fd, #fff);
+      color: #333;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    header {
+      background-color: hsl(168, 80%, 42%);
+      color: white;
+      text-align: center;
+      padding: 25px 0;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+    }
+
+    .container {
+      width: 85%;
+      max-width: 1100px;
+      margin: 30px auto 60px;
+      padding: 0 15px;
+    }
+
+    .info,
+    .intro {
+      margin-bottom: 40px;
+      padding: 25px 30px;
+      border-radius: 15px;
+      background-color: #fafafa;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .info:hover,
+    .intro:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: hsl(168, 80%, 42%);
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .photos {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .photos img {
+      width: 160px;
+      height: 120px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      object-fit: cover;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .photos img:hover {
+      transform: scale(1.07);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    .photo1 {
+      display: flex;
+      justify-content: flex-end;
+      gap: 25px;
+      flex-wrap: nowrap;
+      float: right;
+      margin-bottom: 25px;
+    }
+
+    .photo1 img {
+      width: 320px;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    .photo1 img:hover {
+      transform: scale(1.05);
+    }
+
+    .styled {
+      border: none;
+      line-height: 2.5;
+      padding: 0 50px;
+      font-size: 1rem;
+      text-align: center;
+      color: #fff;
+      text-shadow: 1px 1px 1px #000;
+      border-radius: 15px;
+      background-color: rgb(129, 129, 129);
+      background-image: linear-gradient(to top right,
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0.2) 30%,
+          rgba(0, 0, 0, 0));
+      box-shadow:
+        inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .styled:hover {
+      background-color: rgb(100, 100, 100);
+    }
+
+    .styled:active {
+      box-shadow:
+        inset -2px -2px 4px rgba(255, 255, 255, 0.6),
+        inset 2px 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .space {
+      width: 6px;
+      display: inline-block;
+    }
+
+    .section {
+      display: none;
+      padding: 20px 30px;
+      border-radius: 15px;
+      border: 1px solid #ddd;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    nav {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    nav button {
+      padding: 10px 22px;
+      margin: 0 8px 10px 0;
+      cursor: pointer;
+      border: 2px solid hsl(168, 80%, 42%);
+      background-color: white;
+      color: hsl(168, 80%, 42%);
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    nav button:hover:not(.active) {
+      background-color: hsl(168, 80%, 42%);
+      color: white;
+    }
+
+    nav button.active {
+      background-color: hsl(168, 80%, 42%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(0, 150, 130, 0.6);
+    }
+
+    .toggle-button {
+      padding: 10px 22px;
+      margin: 0 8px 10px 0;
+      cursor: pointer;
+      border: 2px solid hsl(0, 0%, 0%);
+      background-color: rgb(255, 255, 255);
+      color: hsl(0, 0%, 0%);
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-button:hover {
+      background-color: #000000;
+      color: hsl(0, 0%, 99%);
+    }
+
+    .toggle-content {
+      background-color: #ffffff;
+      border-radius: 15px;
+      padding: 15px 20px;
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+    }
+
+    .photos img.enlarged {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: auto;
+      max-width: 90vw;
+      max-height: 90vh;
+      height: auto;
+      transform: translate(-50%, -50%);
+      z-index: 1001;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+      cursor: zoom-out;
+      border-radius: 15px;
+    }
+
+    #overlay {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="overlay"></div>
+  <header>
+    <h1>你好!</h1>
+  </header>
+
+  <div class="container">
+    <div class="info">
+      <nav>
+        <button data-target="section1" class="active">主頁</button>
+        <button data-target="section2">自我介紹</button>
+        <button data-target="section3">血壓量測</button>
+        <button data-target="section4">控制家電</button>
+      </nav>
+
+      <div id="section1" class="section active">
+        <div class="intro">
+          <h2>歡迎來到我的個人網站</h2>
+          <p>這是一個展示我工作經歷以及作品的網站，有我在網路城市應用課程中學習到的東西、智慧家電控制、以及血壓量測等內容。</p>
+        </div>
+      </div>
+
+      <div id="section2" class="section">
+        <div class="container">
+          <div class="info">
+            <div class="photo1">
+              <img src="profile.jpg" alt="profile" />
+            </div>
+            <h2>基本資訊</h2>
+            <p>姓名: 何家騏</p>
+            <p>學號：C110252220</p>
+            <p>生日: 2003.03.26</p>
+            <p>工作：消防機電維修</p>
+            <p>興趣: 音樂</p>
+            <p>目前正在半工半讀中，白天有全職的工作，從事機電維修，較熟悉受信總機以及自動控制電路的檢修
+              ，有工業配線丙級證照，平時的興趣是音樂以及欣賞藝術，未來應該會去考更多跟電機相關的證照，
+              以及學習PLC，跟希望能考消防設備士
+            </p>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="info">
+            <h3>工作</h3>
+            <p>
+              我工作的內容主要有:大樓的機電設備保養及維修，大樓的消防系統保養及維修。
+              以及最近也有維修一些簡單的弱電、監視器。
+            </p>
+            <P>以下是我工作各個部份的簡介以及一些施工時的照片</P>
+
+            <button class="toggle-button">消防機組管系查修</button>
+            <div class="toggle section" style="display:none;">
+              <P>消防系統裡主要可以分成兩大系統，水系統跟電系統，水系統的機組包含了泵浦，馬達，
+                以及相關的控制電路、遠隔開關及配件等。大部分大樓會有消防(給消防栓)、泡沫(停車場滅火)、
+                灑水(高樓層灑水)、採水(給消防車借水用)這四台機組，依照大樓的設計跟規範，擁有這四種
+                裡其中幾種。我們就是負責檢修管系及控制電路的部分</P>
+
+              <div class="photos">
+                <img src="1.jpg" alt="" />
+                <img src="2.jpg" alt="" />
+                <img src="3.jpg" alt="" />
+                <img src="4.jpg" alt="" />
+                <img src="5.jpg" alt="" />
+                <img src="6.jpg" alt="" />
+              </div>
+            </div>
+
+            <button class="toggle-button">受信總機查修</button>
+            <div class="toggle section" style="display:none;">
+              <P>
+                屬於消防系統中電的部分，主要負責警報的功能，各個防護區的信號都會回來總機
+                ，再由總機控制外部的設備如:警鈴、標示燈、蜂鳴器(灑水警報)、排煙閘門、防火門等，也可以
+                移報給其他設備如:廣播主機、自然排煙窗、防煙鐵捲門、瓦斯總閥、保全系統等，也有部分總機有
+                遠端強制啟動機組或其他設備。我們負責維修外部線路、內部的零件及相關的設備。
+              </P>
+              <P>
+                受信總機大致可分為兩種:P型跟R型，主要差別在於架構不同。
+              </P>
+              <P>
+                P型:總機控制直接和外部設備連接，外部線路較複雜，但較容易修改
+              </P>
+              <P>
+                R型:總機傳送數位信號到現場的中繼器及模組，在由現場的中繼器控制現場設備，
+                可以簡化部分線路及方便統整發報的訊息，但不容易修改，有時需要原廠工程師配合
+              </P>
+
+              <div class="photos">
+                <img src="001.jpg" alt="" />
+                <img src="002.jpg" alt="" />
+                <img src="21.jpg" alt="" />
+                <img src="22.jpg" alt="" />
+                <img src="23.jpg" alt="" />
+                <img src="24.jpg" alt="" />
+                <img src="25.jpg" alt="" />
+                <img src="26.jpg" alt="" />
+                <img src="27.jpg" alt="" />
+                <img src="29.jpg" alt="" />
+                <img src="30.jpg" alt="" />
+                <img src="32.jpg" alt="" />
+              </div>
+            </div>
+
+            <button class="toggle-button">控制盤、電盤查修</button>
+            <div class="toggle section" style="display:none;">
+              <P>
+                包括汙廢水、揚水、消防機組、燈控等的設備及線路維修更新，器具更換、抽換線、增設、重新配置等
+              </P>
+              <div class="photos">
+                <img src="43.jpg" alt="" />
+                <img src="44.jpg" alt="" />
+                <img src="45.jpg" alt="" />
+                <img src="46.jpg" alt="" />
+                <img src="51.jpg" alt="" />
+                <img src="52.jpg" alt="" />
+                <img src="55.jpg" alt="" />
+                <img src="012.jpg" alt="" />
+              </div>
+            </div>
+
+            <button class="toggle-button">廣播主機</button>
+            <div class="toggle section" style="display:none;">
+              <P>
+                廣播主機也是消防系統中重要的一部份，負責廣播疏散，通常接受總機的移報啟動，
+                或手動強制啟動，或警急電話的信號啟動，也有業務廣播的功能，而大部分的新大樓
+                都有分層分區。我們負責維修外部線路，內部的零件及喇叭更換。
+              </P>
+              <div class="photos">
+                <img src="61.jpg" alt="" />
+                <img src="63.jpg" alt="" />
+                <img src="65.jpg" alt="" />
+                <img src="66.jpg" alt="" />
+                <img src="68.jpg" alt="" />
+                <img src="70.jpg" alt="" />
+                <img src="71.jpg" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="section3" class="section">
+        <h2>血壓量測</h2>
+        <p></p>
+      </div>
+
+      <div id="section4" class="section">
+        <h2>控制家電</h2>
+        <p></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const overlay = document.getElementById('overlay');
+
+    const buttons = document.querySelectorAll('nav button');
+    const sections = document.querySelectorAll('.section');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        buttons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const targetId = button.getAttribute('data-target');
+        sections.forEach(section => {
+          if (section.id === targetId) {
+            section.classList.add('active');
+          } else {
+            section.classList.remove('active');
+          }
+        });
+      });
+    });
+
+    const toggleButtons = document.querySelectorAll('.toggle-button');
+
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const content = button.nextElementSibling;
+        const isVisible = content.style.display === 'block';
+
+        content.style.display = isVisible ? 'none' : 'block';
+      });
+    });
+
+    document.querySelectorAll('.photos img').forEach(img => {
+      img.addEventListener('click', () => {
+        const isEnlarged = img.classList.contains('enlarged');
+
+        document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
+
+        if (isEnlarged) {
+          overlay.style.display = 'none';
+          document.body.style.overflow = '';
+        } else {
+          img.classList.add('enlarged');
+          overlay.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+
+    overlay.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+      document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
+    });
+
+  </script>
+
+</body>
+
+</html>
