@@ -399,105 +399,111 @@
       </div>
 
       <div id="section4" class="section">
-  <h2>控制家電 & 即時影像</h2>
+        <h2>控制家電 & 即時影像</h2>
 
-  <div style="text-align:center; margin-top:25px;">
-    <h3 style="color:hsl(168, 80%, 42%);">即時影像畫面</h3>
+        <div style="text-align:center; margin-top:25px;">
+          <h3 style="color:hsl(168, 80%, 42%);">即時影像畫面</h3>
 
-    <img id="stream" 
-         src="http://172.20.10.2:81/stream"
-         style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
+          <!-- ✅ 改成 ngrok 串流 -->
+          <img id="stream" src=""
+            style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
 
-    <br><br>
-    <button class="styled" onclick="startStream()">開啟串流</button>
-    <span class="space"></span>
-    <button class="styled" onclick="stopStream()">關閉串流</button>
+          <br><br>
+          <button class="styled" onclick="startStream()">開啟串流</button>
+          <span class="space"></span>
+          <button class="styled" onclick="stopStream()">關閉串流</button>
 
-    <br><br><hr><br>
+          <br><br>
+          <hr><br>
 
-    <h3 style="color:hsl(168, 80%, 42%);">IO4 控制</h3>
-    <button class="styled" onclick="controlGPIO(4,1)">IO4 ON</button>
-    <span class="space"></span>
-    <button class="styled" onclick="controlGPIO(4,0)">IO4 OFF</button>
-  </div>
-</div>
+          <h3 style="color:hsl(168, 80%, 42%);">IO4 控制</h3>
+          <button class="styled" onclick="controlGPIO(4,1)">IO4 ON</button>
+          <span class="space"></span>
+          <button class="styled" onclick="controlGPIO(4,0)">IO4 OFF</button>
+        </div>
+      </div>
 
     </div>
+
   </div>
   </div>
+  </div>
 
-  <script>
-    const overlay = document.getElementById('overlay');
+ <script>
+  const overlay = document.getElementById('overlay');
 
-    const buttons = document.querySelectorAll('nav button');
-    const sections = document.querySelectorAll('.section');
+  const buttons = document.querySelectorAll('nav button');
+  const sections = document.querySelectorAll('.section');
 
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        buttons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
 
-        const targetId = button.getAttribute('data-target');
-        sections.forEach(section => {
-          if (section.id === targetId) {
-            section.classList.add('active');
-          } else {
-            section.classList.remove('active');
-          }
-        });
-      });
-    });
-
-    const toggleButtons = document.querySelectorAll('.toggle-button');
-
-    toggleButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const content = button.nextElementSibling;
-        const isVisible = content.style.display === 'block';
-
-        content.style.display = isVisible ? 'none' : 'block';
-      });
-    });
-
-    document.querySelectorAll('.photos img').forEach(img => {
-      img.addEventListener('click', () => {
-        const isEnlarged = img.classList.contains('enlarged');
-
-        document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
-
-        if (isEnlarged) {
-          overlay.style.display = 'none';
-          document.body.style.overflow = '';
+      const targetId = button.getAttribute('data-target');
+      sections.forEach(section => {
+        if (section.id === targetId) {
+          section.classList.add('active');
         } else {
-          img.classList.add('enlarged');
-          overlay.style.display = 'block';
-          document.body.style.overflow = 'hidden';
+          section.classList.remove('active');
         }
       });
     });
+  });
 
-    overlay.addEventListener('click', () => {
-      overlay.style.display = 'none';
-      document.body.style.overflow = '';
-      document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
+  const toggleButtons = document.querySelectorAll('.toggle-button');
+
+  toggleButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const content = button.nextElementSibling;
+      const isVisible = content.style.display === 'block';
+      content.style.display = isVisible ? 'none' : 'block';
     });
+  });
 
-    /* ✅ 這三個函式現在放在正確位置 */
-    function startStream() {
-      document.getElementById("stream").src = "http://172.20.10.2:81/stream";
-    }
+  document.querySelectorAll('.photos img').forEach(img => {
+    img.addEventListener('click', () => {
+      const isEnlarged = img.classList.contains('enlarged');
 
-    function stopStream() {
-      document.getElementById("stream").src = "";
-    }
+      document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
 
-    function controlGPIO(pin, state) {
-      fetch(`http://172.20.10.2/gpio?pin=${pin}&state=${state}`)
-        .then(r => console.log("GPIO 設定 OK"))
-        .catch(e => console.log("GPIO 設定失敗", e));
-    }
+      if (isEnlarged) {
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+      } else {
+        img.classList.add('enlarged');
+        overlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
 
-  </script>
+  overlay.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
+  });
+
+
+  /* ✅ ngrok 控制部分（這裡才是新功能） */
+  const TUNNEL = "https://superocular-nasir-boyishly.ngrok-free.dev";
+
+  function startStream() {
+    document.getElementById("stream").src = `${TUNNEL}/stream`;
+  }
+
+  function stopStream() {
+    document.getElementById("stream").src = "";
+  }
+
+  function controlGPIO(pin, state) {
+    fetch(`${TUNNEL}/gpio?pin=${pin}&state=${state}`)
+      .then(r => console.log("GPIO 設定成功"))
+      .catch(e => console.log("GPIO 設定失敗", e));
+  }
+</script>
+
 
 </body>
+
 </html>
