@@ -494,19 +494,22 @@
     console.log("串流已關閉");
   }
 
-  // ===== LED 控制 =====
-  function setLED(value) {
-    fetch(`${ngrokBase}/control?var=led_intensity&val=${value}`, { cache: "no-cache" })
-      .then(response => response.text())  // 讀取 ESP32 回傳文字
-      .then(data => {
-        console.log("LED 設定回應:", data);
-        alert(`LED 設定成功: ${value}`);
-      })
-      .catch(error => {
-        console.error("LED 設定失敗", error);
-        alert("LED 設定失敗");
-      });
-  }
+function setLED(value) {
+  fetch(`${ngrokBase}/control?var=led_intensity&val=${value}`, {
+    method: 'GET',
+    mode: 'cors',       // 強制跨域模式
+    cache: 'no-cache'
+  })
+  .then(response => response.text())
+  .then(data => {
+    console.log("LED 設定回應:", data);
+    alert(`LED 設定成功: ${value}`);
+  })
+  .catch(error => {
+    console.error("LED 設定失敗", error);
+    alert("LED 設定失敗");
+  });
+}
 </script>
 
   </script>
@@ -517,4 +520,5 @@
 
 
 </html>
+
 
