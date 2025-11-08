@@ -409,9 +409,9 @@
             style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
 
           <br><br>
-          <button class="styled" onclick="startStream()">開啟串流</button>
+          <button class="styled" onclick="setLED(255)">ON</button>
           <span class="space"></span>
-          <button class="styled" onclick="stopStream()">關閉串流</button>
+          <button class="styled" onclick="setLED(0)">OFF</button>
 
           <br><br>
           <hr><br>
@@ -491,12 +491,11 @@
       document.getElementById("stream").src = "";
     }
 
-    // LED 控制（原本 IO4 ON/OFF 按鈕改成設定 LED 亮度 255）
-    function controlGPIO(pin, state) {
-      fetch(`${ngrokBase}/control?var=led_intensity&val=255`)
+    function setLED(value) {
+      fetch(`${ngrokBase}/control?var=led_intensity&val=${value}`)
         .then(response => {
           if (response.ok) {
-            console.log("LED 設定亮度成功: 255");
+            console.log(`LED 設定亮度成功: ${value}`);
           } else {
             console.log("LED 設定失敗");
           }
