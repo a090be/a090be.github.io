@@ -1,18 +1,26 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 
 <head>
     <meta charset="UTF-8" />
- 
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src * data: blob: filesystem: about: 'unsafe-inline' 'unsafe-eval'; connect-src *; img-src * data: blob:; font-src * data: blob:;">
 
-   <meta http-equiv="Content-Security-Policy"
-  content="default-src * blob: data: filesystem: about:; 
-           img-src * blob: data:; 
-           font-src * blob: data:; 
-           connect-src * blob: data:; 
-           script-src * 'unsafe-inline' 'unsafe-eval' *; 
-           style-src * 'unsafe-inline' *;">
-<style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #e3f2fd, #fff);
+            color: #333;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
         header {
             background-color: hsl(168, 80%, 42%);
             color: white;
@@ -411,11 +419,20 @@
                     <br><br>
                     <hr><br>
 
-                 <h3 style="color:hsl(168, 80%, 42%);">遠端控制 LED</h3>
+                    <h3 style="color:hsl(168, 80%, 42%);">遠端控制 LED</h3>
 
-<button class="styled" onclick="controlLED(255)">LED ON</button>
-<span class="space"></span>
-<button class="styled" onclick="controlLED(0)">LED OFF</button>
+                    <!-- 隱藏 iframe -->
+                    <iframe id="ledFrame" style="display:none;"></iframe>
+
+                    <button class="styled"
+                        onclick="document.getElementById('ledFrame').src='https://superocular-nasir-boyishly.ngrok-free.dev/control?var=led_intensity&val=255'">
+                        LED ON
+                    </button>
+                    <span class="space"></span>
+                    <button class="styled"
+                        onclick="document.getElementById('ledFrame').src='https://superocular-nasir-boyishly.ngrok-free.dev/control?var=led_intensity&val=0'">
+                        LED OFF
+                    </button>
                 </div>
             </div>
         </div>
@@ -428,86 +445,72 @@
     </div>
     </div>
 
-   <script>
-  const overlay = document.getElementById('overlay');
+    <script>
+        const overlay = document.getElementById('overlay');
 
-  const buttons = document.querySelectorAll('nav button');
-  const sections = document.querySelectorAll('.section');
+        const buttons = document.querySelectorAll('nav button');
+        const sections = document.querySelectorAll('.section');
 
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      buttons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
 
-      const targetId = button.getAttribute('data-target');
-      sections.forEach(section => {
-        section.classList.toggle('active', section.id === targetId);
-      });
-    });
-  });
+                const targetId = button.getAttribute('data-target');
+                sections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+            });
+        });
 
-  const toggleButtons = document.querySelectorAll('.toggle-button');
-  toggleButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const content = button.nextElementSibling;
-      content.style.display = (content.style.display === 'block') ? 'none' : 'block';
-    });
-  });
+        const toggleButtons = document.querySelectorAll('.toggle-button');
 
-  document.querySelectorAll('.photos img').forEach(img => {
-    img.addEventListener('click', () => {
-      const isEnlarged = img.classList.contains('enlarged');
-      document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
-      if (isEnlarged) {
-        overlay.style.display = 'none';
-        document.body.style.overflow = '';
-      } else {
-        img.classList.add('enlarged');
-        overlay.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-    });
-  });
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+            });
+        });
 
-  overlay.addEventListener('click', () => {
-    overlay.style.display = 'none';
-    document.body.style.overflow = '';
-    document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
-  });
+        document.querySelectorAll('.photos img').forEach(img => {
+            img.addEventListener('click', () => {
+                const isEnlarged = img.classList.contains('enlarged');
+                document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
+                if (isEnlarged) {
+                    overlay.style.display = 'none';
+                    document.body.style.overflow = '';
+                } else {
+                    img.classList.add('enlarged');
+                    overlay.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
 
-  // ✅ 只保留這一個 ngrokBase
-  const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
+        overlay.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
+        });
+        const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
 
-  // ===== 即時串流控制 =====
-  function startStream() {
-    const streamImg = document.getElementById("stream");
-    streamImg.src = `${ngrokBase}/stream`;
-    console.log("串流已開啟");
-  }
+        // ===== 即時串流控制 =====
+        function startStream() {
+            const streamImg = document.getElementById("stream");
+            streamImg.src = `${ngrokBase}/stream`;
+            console.log("串流已開啟");
+        }
 
-  function stopStream() {
-    const streamImg = document.getElementById("stream");
-    streamImg.src = "";
-    console.log("串流已關閉");
-  }
+        function stopStream() {
+            const streamImg = document.getElementById("stream");
+            streamImg.src = "";
+            console.log("串流已關閉");
+        }
 
-  // ===== LED 控制 =====
-  async function controlLED(value) {
-    const url = `${ngrokBase}/control?var=led_intensity&val=${value}`;
-    try {
-      const res = await fetch(url, {
-        method: "GET",
-        mode: "no-cors" // 告訴瀏覽器不要檢查 CORS
-      });
-      console.log("LED 指令已送出:", url);
-      alert(value === 255 ? "💡 LED 開啟" : "💤 LED 關閉");
-    } catch (err) {
-      console.error("LED 控制失敗:", err);
-      alert("❌ 控制失敗，請檢查 ngrok 或 ESP32 連線");
-    }
-  }
-</script>
 
+    </script>
+
+    </script>
 
 
 
@@ -515,7 +518,6 @@
 
 
 </html>
-
 
 
 
