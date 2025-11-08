@@ -414,18 +414,14 @@
     <br><br>
     <hr><br>
 
-    <h3 style="color:hsl(168, 80%, 42%);">遠端控制 LED</h3>
+<h3 style="color:hsl(168, 80%, 42%);">遠端控制 LED</h3>
 
-    <!-- 隱藏 iframe -->
-    <iframe id="ledFrame" style="display:none;"></iframe>
+<!-- 隱藏 iframe（備援給電腦） -->
+<iframe id="ledFrame" style="display:none;"></iframe>
 
-    <button class="styled" onclick="document.getElementById('ledFrame').src='https://superocular-nasir-boyishly.ngrok-free.dev/control?var=led_intensity&val=255'">
-      LED ON
-    </button>
-    <span class="space"></span>
-    <button class="styled" onclick="document.getElementById('ledFrame').src='https://superocular-nasir-boyishly.ngrok-free.dev/control?var=led_intensity&val=0'">
-      LED OFF
-    </button>
+<button class="styled" id="ledOn">LED ON</button>
+<span class="space"></span>
+<button class="styled" id="ledOff">LED OFF</button>
   </div>
 </div>
     </div>
@@ -500,8 +496,33 @@
     console.log("串流已關閉");
   }
 
+const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
 
-</script>
+  // 判斷裝置是否為手機
+  function isMobile() {
+    return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+  }
+
+  // LED 控制函數
+  function controlLED(value) {
+    if (isMobile()) {
+      // 手機用 fetch
+      fetch(`${ngrokBase}/control?var=led_intensity&val=${value}`)
+        .then(res => {
+          if (res.ok) console.log(`LED 設定亮度成功: ${value}`);
+          else console.log("LED 設定失敗");
+        })
+        .catch(err => console.log("LED 設定失敗", err));
+    } else {
+      // 桌機用 iframe
+      document.getElementById('ledFrame').src = `${ngrokBase}/control?var=led_intensity&val=${value}`;
+    }
+  }
+
+  // 綁定按鈕
+  document.getElementById('ledOn').addEventListener('click', () => controlLED(255));
+  document.getElementById('ledOff').addEventListener('click', () => controlLED(0));
+
 
   </script>
 
@@ -511,6 +532,7 @@
 
 
 </html>
+
 
 
 
