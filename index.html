@@ -404,7 +404,7 @@
         <div style="text-align:center; margin-top:25px;">
           <h3 style="color:hsl(168, 80%, 42%);">即時影像畫面</h3>
 
-          <!-- ✅ 改成 ngrok 串流 -->
+          <!-- ✅ ngrok 串流 -->
           <img id="stream" src=""
             style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
 
@@ -416,12 +416,13 @@
           <br><br>
           <hr><br>
 
-          <h3 style="color:hsl(168, 80%, 42%);">IO4 控制</h3>
+          <h3 style="color:hsl(168, 80%, 42%);">遠端控制</h3>
           <button class="styled" onclick="controlGPIO(4,1)">IO4 ON</button>
           <span class="space"></span>
           <button class="styled" onclick="controlGPIO(4,0)">IO4 OFF</button>
         </div>
       </div>
+
 
     </div>
 
@@ -429,79 +430,81 @@
   </div>
   </div>
 
- <script>
-  const overlay = document.getElementById('overlay');
+  <script>
+    const overlay = document.getElementById('overlay');
 
-  const buttons = document.querySelectorAll('nav button');
-  const sections = document.querySelectorAll('.section');
+    const buttons = document.querySelectorAll('nav button');
+    const sections = document.querySelectorAll('.section');
 
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      buttons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        buttons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
 
-      const targetId = button.getAttribute('data-target');
-      sections.forEach(section => {
-        if (section.id === targetId) {
-          section.classList.add('active');
+        const targetId = button.getAttribute('data-target');
+        sections.forEach(section => {
+          section.classList.toggle('active', section.id === targetId);
+        });
+      });
+    });
+
+    const toggleButtons = document.querySelectorAll('.toggle-button');
+
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const content = button.nextElementSibling;
+        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+      });
+    });
+
+    document.querySelectorAll('.photos img').forEach(img => {
+      img.addEventListener('click', () => {
+        const isEnlarged = img.classList.contains('enlarged');
+        document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
+        if (isEnlarged) {
+          overlay.style.display = 'none';
+          document.body.style.overflow = '';
         } else {
-          section.classList.remove('active');
+          img.classList.add('enlarged');
+          overlay.style.display = 'block';
+          document.body.style.overflow = 'hidden';
         }
       });
     });
-  });
 
-  const toggleButtons = document.querySelectorAll('.toggle-button');
-
-  toggleButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const content = button.nextElementSibling;
-      const isVisible = content.style.display === 'block';
-      content.style.display = isVisible ? 'none' : 'block';
+    overlay.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+      document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
     });
-  });
 
-  document.querySelectorAll('.photos img').forEach(img => {
-    img.addEventListener('click', () => {
-      const isEnlarged = img.classList.contains('enlarged');
+    // ===== ESP32-CAM 透過 ngrok 控制 =====
+    // ✅ 每次 ngrok 啟動後更新這個 URL
+    const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev ";
 
-      document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
+    // 串流控制
+    function startStream() {
+      document.getElementById("stream").src = `${ngrokBase}/stream`;
+    }
 
-      if (isEnlarged) {
-        overlay.style.display = 'none';
-        document.body.style.overflow = '';
-      } else {
-        img.classList.add('enlarged');
-        overlay.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-    });
-  });
+    function stopStream() {
+      document.getElementById("stream").src = "";
+    }
 
-  overlay.addEventListener('click', () => {
-    overlay.style.display = 'none';
-    document.body.style.overflow = '';
-    document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
-  });
+    // GPIO 控制
+    function controlGPIO(pin, state) {
+      fetch(`${ngrokBase}/gpio?pin=${pin}&state=${state}`)
+        .then(response => {
+          if (response.ok) {
+            console.log(`GPIO${pin} 設定成功: ${state}`);
+          } else {
+            console.log(`GPIO${pin} 設定失敗`);
+          }
+        })
+        .catch(error => console.log("GPIO 設定失敗", error));
+    }
+  </script>
 
-
-  /* ✅ ngrok 控制部分（這裡才是新功能） */
-  const TUNNEL = "https://superocular-nasir-boyishly.ngrok-free.dev";
-
-  function startStream() {
-    document.getElementById("stream").src = `${TUNNEL}/stream`;
-  }
-
-  function stopStream() {
-    document.getElementById("stream").src = "";
-  }
-
-  function controlGPIO(pin, state) {
-    fetch(`${TUNNEL}/gpio?pin=${pin}&state=${state}`)
-      .then(r => console.log("GPIO 設定成功"))
-      .catch(e => console.log("GPIO 設定失敗", e));
-  }
-</script>
 
 
 </body>
