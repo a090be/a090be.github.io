@@ -403,25 +403,27 @@
 
         <div style="text-align:center; margin-top:25px;">
           <h3 style="color:hsl(168, 80%, 42%);">即時影像畫面</h3>
-
-          <!-- ✅ ngrok 串流 -->
           <img id="stream" src=""
             style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
-
           <br><br>
-          <button class="styled" onclick="setLED(255)">ON</button>
-          <span class="space"></span>
-          <button class="styled" onclick="setLED(0)">OFF</button>
 
+          <!-- 串流控制 -->
+          <button class="styled" onclick="startStream()">開啟串流</button>
+          <span class="space"></span>
+          <button class="styled" onclick="stopStream()">關閉串流</button>
           <br><br>
           <hr><br>
 
           <h3 style="color:hsl(168, 80%, 42%);">遠端控制</h3>
-          <button class="styled" onclick="controlGPIO(4,1)">IO4 ON</button>
+          <!-- LED ON/OFF -->
+          <button class="styled" onclick="setLED(255)">ON</button>
           <span class="space"></span>
-          <button class="styled" onclick="controlGPIO(4,0)">IO4 OFF</button>
+          <button class="styled" onclick="setLED(0)">OFF</button>
         </div>
       </div>
+
+    </div>
+  </div>
 
 
     </div>
@@ -478,8 +480,7 @@
       document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
     });
 
-    // ===== ESP32-CAM 透過 ngrok 控制 =====
-    // ✅ 每次 ngrok 啟動後更新這個 URL
+   // ===== ESP32-CAM 透過 ngrok 控制 =====
     const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
 
     // 串流控制
@@ -491,6 +492,7 @@
       document.getElementById("stream").src = "";
     }
 
+    // LED 控制
     function setLED(value) {
       fetch(`${ngrokBase}/control?var=led_intensity&val=${value}`)
         .then(response => {
