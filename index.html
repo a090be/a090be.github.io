@@ -491,23 +491,22 @@
       document.getElementById("stream").src = "";
     }
 
-    // GPIO 控制
+    // LED 控制（原本 IO4 ON/OFF 按鈕改成設定 LED 亮度 255）
     function controlGPIO(pin, state) {
-      fetch(`${ngrokBase}/gpio?pin=${pin}&state=${state}`)
+      fetch(`${ngrokBase}/control?var=led_intensity&val=255`)
         .then(response => {
           if (response.ok) {
-            console.log(`GPIO${pin} 設定成功: ${state}`);
+            console.log("LED 設定亮度成功: 255");
           } else {
-            console.log(`GPIO${pin} 設定失敗`);
+            console.log("LED 設定失敗");
           }
         })
-        .catch(error => console.log("GPIO 設定失敗", error));
+        .catch(error => console.log("LED 設定失敗", error));
     }
   </script>
 
 
 
 </body>
-
 
 </html>
