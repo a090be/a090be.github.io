@@ -409,13 +409,13 @@
         <h3 style="color:hsl(168, 80%, 42%);">即時影像畫面</h3>
 
         <!-- 手機內嵌可播放的串流 iframe -->
-        <iframe 
-            id="streamFrame"
-            style="width:95%; max-width:600px; height:480px; border-radius:15px; border:none; box-shadow:0 6px 20px rgba(0,0,0,0.25);"
-            allow="autoplay; fullscreen"
-            allowfullscreen
-            referrerpolicy="no-referrer">
-        </iframe>
+     <iframe 
+    id="streamFrame"
+    style="width:95%; max-width:600px; height:480px; border-radius:15px; border:none; box-shadow:0 6px 20px rgba(0,0,0,0.25);"
+    allow="autoplay; fullscreen; camera; microphone; encrypted-media"
+    referrerpolicy="no-referrer">
+</iframe>
+
         <br><br>
 
         <!-- 串流控制按鈕 -->
@@ -501,6 +501,7 @@
     });
 </script>
 </html>
+
 
 
 
