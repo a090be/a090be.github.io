@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 
@@ -420,31 +421,51 @@
                     <hr><br>
 
                     <h3 style="color:hsl(168, 80%, 42%);">遠端控制 LED</h3>
-                    <button class="styled" onclick="ledControl(100)">LED ON</button>
+
+                    <!-- 隱藏 iframe -->
+                    <iframe id="ledFrame" style="display:none;"></iframe>
+
+                    <button class="styled"
+                        onclick="document.getElementById('ledFrame').src='https://superocular-nasir-boyishly.ngrok-free.dev/control?var=led_intensity&val=100'">
+                        LED ON
+                    </button>
                     <span class="space"></span>
-                    <button class="styled" onclick="ledControl(0)">LED OFF</button>
+                    <button class="styled"
+                        onclick="document.getElementById('ledFrame').src='https://superocular-nasir-boyishly.ngrok-free.dev/control?var=led_intensity&val=0'">
+                        LED OFF
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+
+    </div>
+
+    </div>
+    </div>
+    </div>
+
     <script>
         const overlay = document.getElementById('overlay');
 
-        // 分頁切換
         const buttons = document.querySelectorAll('nav button');
         const sections = document.querySelectorAll('.section');
+
         buttons.forEach(button => {
             button.addEventListener('click', () => {
                 buttons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
+
                 const targetId = button.getAttribute('data-target');
-                sections.forEach(section => section.classList.toggle('active', section.id === targetId));
+                sections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
             });
         });
 
-        // toggle section
         const toggleButtons = document.querySelectorAll('.toggle-button');
+
         toggleButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const content = button.nextElementSibling;
@@ -452,7 +473,6 @@
             });
         });
 
-        // 點擊照片放大
         document.querySelectorAll('.photos img').forEach(img => {
             img.addEventListener('click', () => {
                 const isEnlarged = img.classList.contains('enlarged');
@@ -467,12 +487,12 @@
                 }
             });
         });
+
         overlay.addEventListener('click', () => {
             overlay.style.display = 'none';
             document.body.style.overflow = '';
             document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
         });
-
         const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
 
         // ===== 即時串流控制 =====
@@ -488,22 +508,21 @@
             console.log("串流已關閉");
         }
 
-        // ===== LED 控制 =====
-        function ledControl(val) {
-            fetch(`${ngrokBase}/control?var=led_intensity&val=${val}`, {
-                method: 'GET',
-                headers: {
-                    'ngrok-skip-browser-warning': '1',
-                    'Accept': '*/*'
-                }
-            })
-            .then(res => {
-                if (res.ok) console.log(`LED 控制成功: ${val}`);
-                else console.log('LED 控制失敗', res.status);
-            })
-            .catch(err => console.error('Fetch 錯誤', err));
-        }
+
     </script>
+
+    </script>
+
+
+
 </body>
 
+
 </html>
+
+
+
+
+
+
+
