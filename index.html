@@ -408,12 +408,12 @@
     <div style="text-align:center; margin-top:25px;">
         <h3 style="color:hsl(168, 80%, 42%);">即時影像畫面</h3>
 
-        <!-- 串流 iframe -->
+        <!-- 手機內嵌可播放的串流 iframe -->
         <iframe 
             id="streamFrame"
             style="width:95%; max-width:600px; height:480px; border-radius:15px; border:none; box-shadow:0 6px 20px rgba(0,0,0,0.25);"
-            allow="autoplay; fullscreen;"
-            sandbox="allow-scripts allow-same-origin allow-popups"
+            allow="autoplay; fullscreen"
+            allowfullscreen
             referrerpolicy="no-referrer">
         </iframe>
         <br><br>
@@ -429,13 +429,11 @@
         <h3 style="color:hsl(168, 80%, 42%);">遠端控制 LED</h3>
         <!-- 隱藏 iframe 用來發送 LED 控制 -->
         <iframe id="ledFrame" style="display:none;"></iframe>
-        <button class="styled"
-            onclick="document.getElementById('ledFrame').src=ngrokBase+'/control?var=led_intensity&val=100'">
+        <button class="styled" onclick="document.getElementById('ledFrame').src=ngrokBase+'/control?var=led_intensity&val=100'">
             LED ON
         </button>
         <span class="space"></span>
-        <button class="styled"
-            onclick="document.getElementById('ledFrame').src=ngrokBase+'/control?var=led_intensity&val=0'">
+        <button class="styled" onclick="document.getElementById('ledFrame').src=ngrokBase+'/control?var=led_intensity&val=0'">
             LED OFF
         </button>
     </div>
@@ -451,10 +449,9 @@
     }
 
     function stopStream() {
-        streamFrame.src = ""; // 清空 src 停止串流
+        streamFrame.src = ""; // 停止串流
         console.log("串流已關閉");
     }
-
     // 切換 section
     const overlay = document.getElementById('overlay');
     const buttons = document.querySelectorAll('nav button');
@@ -504,5 +501,6 @@
     });
 </script>
 </html>
+
 
 
