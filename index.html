@@ -402,106 +402,86 @@
                 <h2>血壓量測</h2>
                 <p></p>
             </div>
-<div id="section4" class="section">
-    <h2>控制家電 & 即時影像</h2>
+ <div id="section4" class="section">
+                <h2>控制家電 & 即時影像</h2>
+                <div style="text-align:center; margin-top:25px;">
+                    <h3>即時影像畫面</h3>
+                    <img id="streamImg" src="" style="width:95%; max-width:600px; height:480px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
+                    <br><br>
+                    <button class="styled" onclick="startStream()">開啟串流</button>
+                    <span class="space"></span>
+                    <button class="styled" onclick="stopStream()">關閉串流</button>
+                    <br><br>
+                    <hr><br>
+                    <h3>遠端控制 LED</h3>
+                    <iframe id="ledFrame" style="display:none;"></iframe>
+                    <button class="styled" onclick="document.getElementById('ledFrame').src=ngrokBase+'/control?var=led_intensity&val=100'">LED ON</button>
+                    <span class="space"></span>
+                    <button class="styled" onclick="document.getElementById('ledFrame').src=ngrokBase+'/control?var=led_intensity&val=0'">LED OFF</button>
+                </div>
+            </div>
 
-    <div style="text-align:center; margin-top:25px;">
-        <h3 style="color:hsl(168, 80%, 42%);">即時影像畫面</h3>
-
-        <!-- 手機內嵌可播放的串流 iframe -->
-     <iframe 
-    id="streamFrame"
-    style="width:95%; max-width:600px; height:480px; border-radius:15px; border:none; box-shadow:0 6px 20px rgba(0,0,0,0.25);"
-    allow="autoplay; fullscreen; camera; microphone; encrypted-media"
-    referrerpolicy="no-referrer">
-</iframe>
-
-        <br><br>
-
-        <!-- 串流控制按鈕 -->
-        <button class="styled" onclick="startStream()">開啟串流</button>
-        <span class="space"></span>
-        <button class="styled" onclick="stopStream()">關閉串流</button>
-        <br><br>
-
-        <hr><br>
-
-        <h3 style="color:hsl(168, 80%, 42%);">遠端控制 LED</h3>
-        <!-- 隱藏 iframe 用來發送 LED 控制 -->
-        <iframe id="ledFrame" style="display:none;"></iframe>
-        <button class="styled" onclick="document.getElementById('ledFrame').src=ngrokBase+'/control?var=led_intensity&val=100'">
-            LED ON
-        </button>
-        <span class="space"></span>
-        <button class="styled" onclick="document.getElementById('ledFrame').src=ngrokBase+'/control?var=led_intensity&val=0'">
-            LED OFF
-        </button>
+        </div>
     </div>
-</div>
 
-<script>
-    const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
-    const streamFrame = document.getElementById("streamFrame");
+    <script>
+        const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
+        const streamImg = document.getElementById("streamImg");
 
-    function startStream() {
-        streamFrame.src = ngrokBase + "/stream";
-        console.log("串流已開啟");
-    }
+        function startStream() {
+            streamImg.src = ngrokBase + "/stream";
+        }
 
-    function stopStream() {
-        streamFrame.src = ""; // 停止串流
-        console.log("串流已關閉");
-    }
-    // 切換 section
-    const overlay = document.getElementById('overlay');
-    const buttons = document.querySelectorAll('nav button');
-    const sections = document.querySelectorAll('.section');
+        function stopStream() {
+            streamImg.src = "";
+        }
 
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            buttons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+        // 切換 section
+        const overlay = document.getElementById('overlay');
+        const buttons = document.querySelectorAll('nav button');
+        const sections = document.querySelectorAll('.section');
 
-            const targetId = button.getAttribute('data-target');
-            sections.forEach(section => {
-                section.classList.toggle('active', section.id === targetId);
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const targetId = button.getAttribute('data-target');
+                sections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
             });
         });
-    });
 
-    // toggle 展開照片內容
-    const toggleButtons = document.querySelectorAll('.toggle-button');
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const content = button.nextElementSibling;
-            content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+        // toggle 展開照片內容
+        const toggleButtons = document.querySelectorAll('.toggle-button');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+            });
         });
-    });
 
-    // 點擊放大照片
-    document.querySelectorAll('.photos img').forEach(img => {
-        img.addEventListener('click', () => {
-            const isEnlarged = img.classList.contains('enlarged');
-            document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
-            if (isEnlarged) {
-                overlay.style.display = 'none';
-                document.body.style.overflow = '';
-            } else {
-                img.classList.add('enlarged');
-                overlay.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            }
+        // 點擊放大照片
+        document.querySelectorAll('.photos img').forEach(img => {
+            img.addEventListener('click', () => {
+                const isEnlarged = img.classList.contains('enlarged');
+                document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
+                if (isEnlarged) {
+                    overlay.style.display = 'none';
+                    document.body.style.overflow = '';
+                } else {
+                    img.classList.add('enlarged');
+                    overlay.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                }
+            });
         });
-    });
 
-    overlay.addEventListener('click', () => {
-        overlay.style.display = 'none';
-        document.body.style.overflow = '';
-        document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
-    });
-</script>
+        overlay.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
+        });
+    </script>
+</body>
 </html>
-
-
-
-
