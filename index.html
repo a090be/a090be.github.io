@@ -404,26 +404,25 @@
             </div>
 
             <div id="section4" class="section">
-                <h2>控制家電 & 即時影像</h2>
+            <h2>控制家電 & 即時影像</h2>
 
-                <div style="text-align:center; margin-top:25px;">
-                    <h3 style="color:hsl(168,80%,42%);">即時影像畫面</h3>
-                    <img id="stream" src="" style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
-                    <br><br>
+            <div style="text-align:center; margin-top:25px;">
+                <h3 style="color:hsl(168,80%,42%);">即時影像畫面</h3>
+                <img id="stream" src="" style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
+                <br><br>
 
-                    <!-- 串流控制 -->
-                    <button class="styled" onclick="startStream()">開啟串流</button>
-                    <span class="space"></span>
-                    <button class="styled" onclick="stopStream()">關閉串流</button>
-                    <br><br>
-                    <hr><br>
+                <!-- 串流控制 -->
+                <button class="styled" onclick="startStream()">開啟串流</button>
+                <span class="space"></span>
+                <button class="styled" onclick="stopStream()">關閉串流</button>
+                <br><br>
+                <hr><br>
 
-                    <h3 style="color:hsl(168,80%,42%);">遠端控制 LED</h3>
+                <h3 style="color:hsl(168,80%,42%);">遠端控制 LED</h3>
 
-                    <button class="styled" onclick="controlLED(100)">LED ON</button>
-                    <span class="space"></span>
-                    <button class="styled" onclick="controlLED(0)">LED OFF</button>
-                </div>
+                <button class="styled" onclick="controlLED(100)">LED ON</button>
+                <span class="space"></span>
+                <button class="styled" onclick="controlLED(0)">LED OFF</button>
             </div>
         </div>
     </div>
@@ -476,18 +475,10 @@
 
         const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
 
-        // ===== 即時串流控制 =====
+        // ===== 即時串流控制（改用 img src） =====
         function startStream() {
-            fetch(`${ngrokBase}/stream`, {
-                headers: { "ngrok-skip-browser-warning": "1" }
-            })
-            .then(res => res.blob())
-            .then(blob => {
-                const url = URL.createObjectURL(blob);
-                document.getElementById("stream").src = url;
-                console.log("串流已開啟");
-            })
-            .catch(err => console.error(err));
+            document.getElementById("stream").src = `${ngrokBase}/stream?ngrok-skip-browser-warning=1`;
+            console.log("串流已開啟");
         }
 
         function stopStream() {
