@@ -403,28 +403,22 @@
                 <p></p>
             </div>
 
-           <div id="section4" class="section">
+            <div id="section4" class="section">
                 <h2>控制家電 & 即時影像</h2>
-
                 <div style="text-align:center; margin-top:25px;">
                     <h3 style="color:hsl(168,80%,42%);">即時影像畫面</h3>
                     <img id="stream" src="" style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
                     <br><br>
-
-                    <!-- 串流控制 -->
-                    <button class="styled" onclick="document.getElementById('stream').src='https://superocular-nasir-boyishly.ngrok-free.dev/stream'">開啟串流</button>
+                    <button class="styled" onclick="startStream()">開啟串流</button>
                     <span class="space"></span>
-                    <button class="styled" onclick="document.getElementById('stream').src=''">關閉串流</button>
-                    <br><br>
-                    <hr><br>
-
+                    <button class="styled" onclick="stopStream()">關閉串流</button>
+                    <br><br><hr><br>
                     <h3 style="color:hsl(168,80%,42%);">遠端控制 LED</h3>
                     <button class="styled" onclick="controlLED(100)">LED ON</button>
                     <span class="space"></span>
                     <button class="styled" onclick="controlLED(0)">LED OFF</button>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -433,37 +427,28 @@
         const buttons = document.querySelectorAll('nav button');
         const sections = document.querySelectorAll('.section');
 
+        // 切換區塊
         buttons.forEach(button => {
             button.addEventListener('click', () => {
                 buttons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-
                 const targetId = button.getAttribute('data-target');
-                sections.forEach(section => {
-                    section.classList.toggle('active', section.id === targetId);
-                });
+                sections.forEach(section => section.classList.toggle('active', section.id === targetId));
             });
         });
 
-        const toggleButtons = document.querySelectorAll('.toggle-button');
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const content = button.nextElementSibling;
-                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
-            });
-        });
-
+        // 圖片放大
         document.querySelectorAll('.photos img').forEach(img => {
             img.addEventListener('click', () => {
                 const isEnlarged = img.classList.contains('enlarged');
                 document.querySelectorAll('.photos img.enlarged').forEach(el => el.classList.remove('enlarged'));
-                if (isEnlarged) {
-                    overlay.style.display = 'none';
-                    document.body.style.overflow = '';
-                } else {
+                if (!isEnlarged) {
                     img.classList.add('enlarged');
                     overlay.style.display = 'block';
                     document.body.style.overflow = 'hidden';
+                } else {
+                    overlay.style.display = 'none';
+                    document.body.style.overflow = '';
                 }
             });
         });
@@ -474,12 +459,34 @@
             document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
         });
 
+        // Toggle 按鈕
+        const toggleButtons = document.querySelectorAll('.toggle-button');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+            });
+        });
+
+        // ===== ESP32 NGROK =====
         const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
+
+        // 即時串流
+        function startStream() {
+            const streamImg = document.getElementById("stream");
+            streamImg.src = `${ngrokBase}/stream?ngrok-skip-browser-warning=1&time=${Date.now()}`;
+            console.log("串流已開啟");
+        }
+        function stopStream() {
+            document.getElementById("stream").src = "";
+            console.log("串流已關閉");
+        }
 
         // LED 控制
         function controlLED(value) {
             fetch(`${ngrokBase}/control?var=led_intensity&val=${value}`, {
-                headers: { "ngrok-skip-browser-warning": "1" }
+                method:"GET",
+                headers: {"ngrok-skip-browser-warning":"1"}
             })
             .then(() => console.log(`LED 設定為 ${value}`))
             .catch(err => console.error(err));
@@ -487,6 +494,7 @@
     </script>
 </body>
 </html>
+
 
 
 
