@@ -407,9 +407,8 @@
                 <h2>控制家電 & 即時影像</h2>
 
                 <div style="text-align:center; margin-top:25px;">
-                    <h3 style="color:hsl(168, 80%, 42%);">即時影像畫面</h3>
-                    <img id="stream" src=""
-                        style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
+                    <h3 style="color:hsl(168,80%,42%);">即時影像畫面</h3>
+                    <img id="stream" src="" style="width:95%; max-width:600px; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.25);" />
                     <br><br>
 
                     <!-- 串流控制 -->
@@ -419,35 +418,18 @@
                     <br><br>
                     <hr><br>
 
-                    <h3 style="color:hsl(168, 80%, 42%);">遠端控制 LED</h3>
+                    <h3 style="color:hsl(168,80%,42%);">遠端控制 LED</h3>
 
-                    <!-- 隱藏 iframe -->
-                    <iframe id="ledFrame" style="display:none;"></iframe>
-
-                    <button class="styled"
-                        onclick="document.getElementById('ledFrame').src='https://superocular-nasir-boyishly.ngrok-free.dev/control?var=led_intensity&val=100'">
-                        LED ON
-                    </button>
+                    <button class="styled" onclick="controlLED(100)">LED ON</button>
                     <span class="space"></span>
-                    <button class="styled"
-                        onclick="document.getElementById('ledFrame').src='https://superocular-nasir-boyishly.ngrok-free.dev/control?var=led_intensity&val=0'">
-                        LED OFF
-                    </button>
+                    <button class="styled" onclick="controlLED(0)">LED OFF</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-    </div>
-
-    </div>
-    </div>
-    </div>
-
     <script>
         const overlay = document.getElementById('overlay');
-
         const buttons = document.querySelectorAll('nav button');
         const sections = document.querySelectorAll('.section');
 
@@ -464,7 +446,6 @@
         });
 
         const toggleButtons = document.querySelectorAll('.toggle-button');
-
         toggleButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const content = button.nextElementSibling;
@@ -492,32 +473,40 @@
             document.body.style.overflow = '';
             document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
         });
+
         const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
 
         // ===== 即時串流控制 =====
         function startStream() {
-            const streamImg = document.getElementById("stream");
-            streamImg.src = `${ngrokBase}/stream`;
-            console.log("串流已開啟");
+            fetch(`${ngrokBase}/stream`, {
+                headers: { "ngrok-skip-browser-warning": "1" }
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                document.getElementById("stream").src = url;
+                console.log("串流已開啟");
+            })
+            .catch(err => console.error(err));
         }
 
         function stopStream() {
-            const streamImg = document.getElementById("stream");
-            streamImg.src = "";
+            document.getElementById("stream").src = "";
             console.log("串流已關閉");
         }
 
-
+        // ===== LED 控制 =====
+        function controlLED(value) {
+            fetch(`${ngrokBase}/control?var=led_intensity&val=${value}`, {
+                headers: { "ngrok-skip-browser-warning": "1" }
+            })
+            .then(() => console.log(`LED 設定為 ${value}`))
+            .catch(err => console.error(err));
+        }
     </script>
-
-    </script>
-
-
-
 </body>
-
-
 </html>
+
 
 
 
