@@ -529,7 +529,7 @@
         })
         .catch(error => console.log("LED 設定失敗", error));
     }
-    const SCRIPT_URL = "你的_GOOGLE_SCRIPT_URL"; // 請填入你的 Google Script 網址
+    const SCRIPT_URL = "你的_GOOGLE_SCRIPT_URL";
     const NETLIFY_API = "https://teal-cat-c6ed71.netlify.app/.netlify/functions/recognize";
 
     function previewImage() {
@@ -563,7 +563,6 @@
           });
           const data = await response.json();
           resultDiv.innerText = "辨識結果：" + data.text;
-          // 嘗試自動填入數值 (假設 AI 回傳 "120/80")
           if (data.text.includes('/')) {
             const parts = data.text.split('/');
             document.getElementById("sys").value = parts[0].trim();
@@ -573,6 +572,7 @@
       };
     }
 
+    // 修正後的上傳功能
     function submitData() {
       const msg = document.getElementById("msg");
       const data = {
@@ -580,11 +580,38 @@
         dia: document.getElementById("dia").value,
         pulse: document.getElementById("pulse").value
       };
-      if (!data.sys || !data.dia) return alert("請填寫血壓數值");
-      msg.innerText = "上傳中...";
-      fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) })
-        .then(() => { msg.innerText = "✅ 已成功存入試算表"; })
-        .catch(() => { msg.innerText = "❌ 上傳失敗"; });
+
+      // 防呆機制 1: 檢查是否填寫了網址
+      if (SCRIPT_URL.includes("你的_GOOGLE_SCRIPT_URL")) {
+        msg.style.color = "red";
+        msg.innerText = "❌ 尚未設定 Google Script 網址，資料無法送出。";
+        return;
+      }
+
+      // 防呆機制 2: 檢查數值
+      if (!data.sys || !data.dia) return alert("請填寫收縮壓與舒張壓");
+
+      msg.style.color = "blue";
+      msg.innerText = "⏳ 上傳中...";
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // 確保 Google Script 能接收
+        body: JSON.stringify(data)
+      })
+        .then(() => {
+          msg.style.color = "green";
+          msg.innerText = "✅ 已嘗試存入試算表 (請至表格確認)";
+          // 成功後自動清空欄位
+          document.getElementById("sys").value = "";
+          document.getElementById("dia").value = "";
+          document.getElementById("pulse").value = "";
+        })
+        .catch((error) => {
+          msg.style.color = "red";
+          msg.innerText = "❌ 上傳發生錯誤";
+          console.error(error);
+        });
     }
   </script>
 
