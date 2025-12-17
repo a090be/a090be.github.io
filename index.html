@@ -519,10 +519,17 @@
                     // 確認這是你在 Netlify 得到的網址
                     const apiUrl = 'https://jolly-gecko-6767fa.netlify.app/.netlify/functions/recognize';
 
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        body: JSON.stringify({ image: base64Data, mimeType: file.type })
-                    });
+                   const response = await fetch(apiUrl, {
+  method: 'POST',
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    image: base64Data,
+    mimeType: file.type
+  })
+});
+
 
                     const data = await response.json();
                     if (data.text) {
@@ -543,4 +550,5 @@
 </body>
 
 </html>
+
 
