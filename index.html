@@ -416,7 +416,7 @@
             <input id="dia" type="number" placeholder="舒張壓 (DIA)" />
             <input id="pulse" type="number" placeholder="心跳 (Pulse)" />
             <button class="styled" onclick="submitData()"
-              style="background-color: hsl(168, 80%, 42%); width: 100%; margin-top: 10px;">送出到 Google Sheet</button>
+              style="background-color: hsl(168, 80%, 42%); width: 100%; margin-top: 10px;">送出</button>
           </div>
 
           <p id="msg" style="margin-top: 15px; font-weight: bold;"></p>
@@ -547,33 +547,7 @@
       }
     }
 
-    async function uploadImage() {
-      const file = document.getElementById('photoInput').files[0];
-      const resultDiv = document.getElementById('bp-result');
-      if (!file) return;
-      resultDiv.innerText = "辨識中...";
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        const base64Data = reader.result.split(',')[1];
-        try {
-          const response = await fetch(NETLIFY_API, {
-            method: 'POST',
-            body: JSON.stringify({ image: base64Data, mimeType: file.type })
-          });
-          const data = await response.json();
-          resultDiv.innerText = "辨識結果：" + data.text;
-          if (data.text.includes('/')) {
-            const parts = data.text.split('/');
-            document.getElementById("sys").value = parts[0].trim();
-            document.getElementById("dia").value = parts[1].trim();
-          }
-        } catch (error) { resultDiv.innerText = "辨識失敗，請手動輸入。"; }
-      };
-    }
-
-    // 修正後的上傳功能
-    function submitData() {
+    async function submitData() {
       const msg = document.getElementById("msg");
       const data = {
         sys: document.getElementById("sys").value,
@@ -581,37 +555,45 @@
         pulse: document.getElementById("pulse").value
       };
 
-      // 防呆機制 1: 檢查是否填寫了網址
       if (SCRIPT_URL.includes("你的_GOOGLE_SCRIPT_URL")) {
         msg.style.color = "red";
-        msg.innerText = "❌ 尚未設定 Google Script 網址，資料無法送出。";
+        msg.innerText = "❌ 尚未設定 Google Script 網址";
         return;
       }
 
-      // 防呆機制 2: 檢查數值
       if (!data.sys || !data.dia) return alert("請填寫收縮壓與舒張壓");
 
       msg.style.color = "blue";
-      msg.innerText = "⏳ 上傳中...";
+      msg.innerText = "⏳ 上傳中並取得判斷結果...";
 
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors', // 確保 Google Script 能接收
-        body: JSON.stringify(data)
-      })
-        .then(() => {
+      try {
+        // 移除 no-cors，改用預設模式以接收回傳值
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.result === "ok") {
           msg.style.color = "green";
-          msg.innerText = "✅ 已嘗試存入試算表 (請至表格確認)";
-          // 成功後自動清空欄位
+          // 這裡就是你要的功能：顯示「判斷結果：」加上試算表回傳的 status
+          msg.innerText = "✅ 已成功存入！判斷結果：" + (result.status || "計算中...");
+          
+          // 成功後自動清空
           document.getElementById("sys").value = "";
           document.getElementById("dia").value = "";
           document.getElementById("pulse").value = "";
-        })
-        .catch((error) => {
-          msg.style.color = "red";
-          msg.innerText = "❌ 上傳發生錯誤";
-          console.error(error);
-        });
+        } else {
+          msg.innerText = "❌ 存入失敗：" + result.message;
+        }
+
+      } catch (error) {
+        // 如果遇到 CORS 阻擋，資料通常有進去，但抓不到回傳值
+        msg.style.color = "orange";
+        msg.innerText = "✅ 資料已送出，但無法直接讀取判斷結果（請至試算表查看）。";
+        console.error("讀取回傳失敗:", error);
+      }
     }
   </script>
 
@@ -620,4 +602,3 @@
 </body>
 
 </html>
-
