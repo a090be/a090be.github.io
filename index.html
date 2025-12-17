@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 
 <head>
     <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src * blob: data: 'unsafe-inline' 'unsafe-eval'; connect-src *; img-src * blob: data:; media-src * blob: data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'; font-src * data:;">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src * blob: data: 'unsafe-inline' 'unsafe-eval'; connect-src *; img-src * blob: data:; media-src * blob: data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'; font-src * data:;">
 
 
 
@@ -398,24 +398,29 @@
                 </div>
             </div>
 
-           <div id="section3" class="section">
-    <h2>血壓量測辨識</h2>
-    <div class="intro" style="text-align: center;">
-        <p>請上傳血壓計照片，系統將自動辨識收縮壓與舒張壓。</p>
-        <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="previewImage()">
-        <button class="toggle-button" onclick="document.getElementById('photoInput').click()">選擇照片</button>
-        
-        <div style="margin: 20px 0;">
-            <img id="bp-preview" style="max-width: 100%; max-height: 300px; display: none; margin: 0 auto; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        </div>
+            <div id="section3" class="section">
+                <h2>血壓量測辨識</h2>
+                <div class="intro" style="text-align: center;">
+                    <p>請上傳血壓計照片，系統將自動辨識收縮壓與舒張壓。</p>
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;"
+                        onchange="previewImage()">
+                    <button class="toggle-button" onclick="document.getElementById('photoInput').click()">選擇照片</button>
 
-        <button id="recognizeBtn" class="styled" onclick="uploadImage()" style="display: none; margin: 0 auto;">開始辨識</button>
-        
-        <div id="bp-result" style="margin-top: 25px; font-size: 1.5rem; font-weight: bold; color: hsl(168, 80%, 42%);"></div>
-    </div>
-</div>
+                    <div style="margin: 20px 0;">
+                        <img id="bp-preview"
+                            style="max-width: 100%; max-height: 300px; display: none; margin: 0 auto; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
 
-           <div id="section4" class="section">
+                    <button id="recognizeBtn" class="styled" onclick="uploadImage()"
+                        style="display: none; margin: 0 auto;">開始辨識</button>
+
+                    <div id="bp-result"
+                        style="margin-top: 25px; font-size: 1.5rem; font-weight: bold; color: hsl(168, 80%, 42%);">
+                    </div>
+                </div>
+            </div>
+
+            <div id="section4" class="section">
                 <h2>遠端控制</h2>
                 <div style="text-align:center; margin-top:25px;">
                     <button class="styled" onclick="openRemote()">遠端控制連結</button>
@@ -476,75 +481,65 @@
             window.open(url, "_blank");
         }
         // --- 血壓辨識功能 ---
-function previewImage() {
-    const file = document.getElementById('photoInput').files[0];
-    const preview = document.getElementById('bp-preview');
-    const btn = document.getElementById('recognizeBtn');
-    const resultDiv = document.getElementById('bp-result');
+        function previewImage() {
+            const file = document.getElementById('photoInput').files[0];
+            const preview = document.getElementById('bp-preview');
+            const btn = document.getElementById('recognizeBtn');
+            const resultDiv = document.getElementById('bp-result');
 
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-            btn.style.display = 'block'; // 顯示辨識按鈕
-            resultDiv.innerText = "";    // 清空上次結果
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-async function uploadImage() {
-    const file = document.getElementById('photoInput').files[0];
-    if (!file) return;
-
-    const resultDiv = document.getElementById('bp-result');
-    const btn = document.getElementById('recognizeBtn');
-    
-    resultDiv.innerText = "辨識中，請稍候...";
-    btn.disabled = true; // 防止重複點擊
-    btn.style.opacity = "0.5";
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-        const base64Data = reader.result.split(',')[1];
-        
-        try {
-            // 確認這是你在 Netlify 得到的網址
-            const apiUrl = 'https://boisterous-belekoy-db4279.netlify.app/.netlify/functions/recognize';
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({ image: base64Data, mimeType: file.type })
-            });
-
-            const data = await response.json();
-            if (data.text) {
-                resultDiv.innerHTML = "辨識結果：<br><span style='font-size: 2.5rem;'>" + data.text + "</span>";
-            } else {
-                resultDiv.innerText = "辨識失敗：" + (data.error || "未知錯誤");
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    btn.style.display = 'block'; // 顯示辨識按鈕
+                    resultDiv.innerText = "";    // 清空上次結果
+                };
+                reader.readAsDataURL(file);
             }
-        } catch (error) {
-            console.error(error);
-            resultDiv.innerText = "系統連線失敗，請檢查網路。";
-        } finally {
-            btn.disabled = false;
-            btn.style.opacity = "1";
         }
-    };
-}
+
+        async function uploadImage() {
+            const file = document.getElementById('photoInput').files[0];
+            if (!file) return;
+
+            const resultDiv = document.getElementById('bp-result');
+            const btn = document.getElementById('recognizeBtn');
+
+            resultDiv.innerText = "辨識中，請稍候...";
+            btn.disabled = true; // 防止重複點擊
+            btn.style.opacity = "0.5";
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64Data = reader.result.split(',')[1];
+
+                try {
+                    // 確認這是你在 Netlify 得到的網址
+                    const apiUrl = 'https://boisterous-belekoy-db4279.netlify.app/.netlify/functions/recognize';
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        body: JSON.stringify({ image: base64Data, mimeType: file.type })
+                    });
+
+                    const data = await response.json();
+                    if (data.text) {
+                        resultDiv.innerHTML = "辨識結果：<br><span style='font-size: 2.5rem;'>" + data.text + "</span>";
+                    } else {
+                        resultDiv.innerText = "辨識失敗：" + (data.error || "未知錯誤");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    resultDiv.innerText = "系統連線失敗，請檢查網路。";
+                } finally {
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                }
+            };
+        }
     </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
