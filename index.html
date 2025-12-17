@@ -457,7 +457,7 @@
   </div>
   </div>
 
-  <script>
+<script>
     const overlay = document.getElementById('overlay');
 
     const buttons = document.querySelectorAll('nav button');
@@ -505,10 +505,9 @@
       document.querySelectorAll('.photos img.enlarged').forEach(img => img.classList.remove('enlarged'));
     });
 
-    // ===== ESP32-CAM 透過 ngrok 控制 =====
+    // ===== ESP32-CAM 控制 =====
     const ngrokBase = "https://superocular-nasir-boyishly.ngrok-free.dev";
 
-    // 串流控制
     function startStream() {
       document.getElementById("stream").src = `${ngrokBase}/stream`;
     }
@@ -517,21 +516,19 @@
       document.getElementById("stream").src = "";
     }
 
-    // LED 控制
     function setLED(value) {
       fetch(`${ngrokBase}/control?var=led_intensity&val=${value}`)
         .then(response => {
-          if (response.ok) {
-            console.log(`LED 設定亮度成功: ${value}`);
-          } else {
-            console.log("LED 設定失敗");
-          }
+          if (response.ok) console.log(`LED 設定成功: ${value}`);
         })
         .catch(error => console.log("LED 設定失敗", error));
     }
+
+    // ===== 設定網址 =====
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHTZy9uzpaJaXvw9teu7sPhNvTe6JGmFr9pRFrgQzfgjqL9Tg0YeiyS5Mlc9X45eO1Bw/exec";
     const NETLIFY_API = "https://teal-cat-c6ed71.netlify.app/.netlify/functions/recognize";
 
+    // ===== 圖片預覽 =====
     function previewImage() {
       const file = document.getElementById('photoInput').files[0];
       const preview = document.getElementById('bp-preview');
@@ -547,6 +544,37 @@
       }
     }
 
+    // ===== 圖片辨識 (補回這一段) =====
+    async function uploadImage() {
+      const file = document.getElementById('photoInput').files[0];
+      const resultDiv = document.getElementById('bp-result');
+      if (!file) return;
+      resultDiv.innerText = "⏳ 辨識中...";
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64Data = reader.result.split(',')[1];
+        try {
+          const response = await fetch(NETLIFY_API, {
+            method: 'POST',
+            body: JSON.stringify({ image: base64Data, mimeType: file.type })
+          });
+          const data = await response.json();
+          resultDiv.innerText = "辨識結果：" + data.text;
+          
+          // 自動填入數值
+          if (data.text.includes('/')) {
+            const parts = data.text.split('/');
+            document.getElementById("sys").value = parts[0].replace(/[^0-9]/g, '');
+            document.getElementById("dia").value = parts[1].replace(/[^0-9]/g, '');
+          }
+        } catch (error) { 
+          resultDiv.innerText = "❌ 辨識失敗，請手動輸入。"; 
+        }
+      };
+    }
+
+    // ===== 送出資料並顯示試算表判斷結果 =====
     async function submitData() {
       const msg = document.getElementById("msg");
       const data = {
@@ -555,19 +583,12 @@
         pulse: document.getElementById("pulse").value
       };
 
-      if (SCRIPT_URL.includes("你的_GOOGLE_SCRIPT_URL")) {
-        msg.style.color = "red";
-        msg.innerText = "❌ 尚未設定 Google Script 網址";
-        return;
-      }
-
       if (!data.sys || !data.dia) return alert("請填寫收縮壓與舒張壓");
 
       msg.style.color = "blue";
       msg.innerText = "⏳ 上傳中並取得判斷結果...";
 
       try {
-        // 移除 no-cors，改用預設模式以接收回傳值
         const response = await fetch(SCRIPT_URL, {
           method: 'POST',
           body: JSON.stringify(data)
@@ -577,25 +598,24 @@
 
         if (result.result === "ok") {
           msg.style.color = "green";
-          // 這裡就是你要的功能：顯示「判斷結果：」加上試算表回傳的 status
-          msg.innerText = "✅ 已成功存入！判斷結果：" + (result.status || "計算中...");
+          // 顯示試算表回傳的 status (E欄)
+          msg.innerText = "✅ 已成功存入！判斷結果：" + (result.status || "無回傳");
           
-          // 成功後自動清空
           document.getElementById("sys").value = "";
           document.getElementById("dia").value = "";
           document.getElementById("pulse").value = "";
         } else {
+          msg.style.color = "red";
           msg.innerText = "❌ 存入失敗：" + result.message;
         }
 
       } catch (error) {
-        // 如果遇到 CORS 阻擋，資料通常有進去，但抓不到回傳值
         msg.style.color = "orange";
-        msg.innerText = "✅ 資料已送出，但無法直接讀取判斷結果（請至試算表查看）。";
-        console.error("讀取回傳失敗:", error);
+        msg.innerText = "⚠️ 資料已送出，但無法直接顯示判斷結果（請檢查 Sheet E 欄）。";
+        console.error("Error:", error);
       }
     }
-  </script>
+</script>
 
 
 
