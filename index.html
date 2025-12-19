@@ -569,7 +569,7 @@
             document.getElementById("dia").value = parts[1].replace(/[^0-9]/g, '');
           }
         } catch (error) { 
-          resultDiv.innerText = "❌ 辨識失敗，請手動輸入。"; 
+          resultDiv.innerText = "辨識失敗，請手動輸入。"; 
         }
       };
     }
@@ -597,16 +597,16 @@
         const result = await response.json();
 
         if (result.result === "ok") {
-          msg.style.color = "green";
+          msg.style.color = "black";
           // 顯示試算表回傳的 status (E欄)
-          msg.innerText = "✅ 已成功存入！判斷結果：" + (result.status || "無回傳");
+          msg.innerText = "已成功存入！判斷結果：" + (result.status || "無回傳");
           
           document.getElementById("sys").value = "";
           document.getElementById("dia").value = "";
           document.getElementById("pulse").value = "";
         } else {
           msg.style.color = "red";
-          msg.innerText = "❌ 存入失敗：" + result.message;
+          msg.innerText = "存入失敗：" + result.message;
         }
 
       } catch (error) {
@@ -622,3 +622,4 @@
 </body>
 
 </html>
+
